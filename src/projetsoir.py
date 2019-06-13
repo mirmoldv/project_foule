@@ -195,6 +195,8 @@ def rectangle(x,y,fx,fy):
 fonctions
 """
 def create_personne():
+    global go
+    go=1
     for i in range(20):
         destination = Point(0,0)#random.randint(0,9))
         vx=random.randint(round(dmax/2)+7,dmax-1)
@@ -212,15 +214,20 @@ def create_personne():
             personne = Voyageur(position_personne,destination,"d"+str(i))
             plan.ajouter_element(personne)
 def anim_personne():
-    essai=0
-    compte=0
-    for pers in plan.elements:
-        if plan.deplacer_element(pers)!=0:
-            compte+=1
-    plan.efface()
-    plan.anim_grille(taille)
+    global go
+    if go==1:
+        compte=0
+        for pers in plan.elements:
+            if plan.deplacer_element(pers)!=0:
+                compte+=1
+        plan.efface()
+        plan.anim_grille(taille)
     id=can.after(500,anim_personne)
+def stop():
+	global go
+	go=0
 
+go=0
 fen = tk.Tk()
 fen.title("Simulateur de foule")
 dmax=30
@@ -229,16 +236,19 @@ dimension = Point(dmax,dmax)
 can = tk.Canvas(fen,bg='dark grey',height=dmax*taille, width=dmax*taille)
 plan=Carte(dimension,dimension,can)
 etoile(12,5)
-etoile(12,15)
+etoile(17,15)
 etoile(10,22)
 rectangle(22,15,2,12)
 rectangle(5,5,2,12)
+rectangle(22,15,8,2)
 
 can.pack(side="left", padx='5', pady = '5')
 bou1= tk.Button(fen, text='Démarrer', width =8, command=create_personne)
 bou1.pack()
-bou2= tk.Button(fen, text='Quitter', width =8, command=fen.destroy)
-bou2.pack(side="bottom")
+bou2 = tk.Button(fen, text='Arrêter', width =8, command=stop)
+bou2.pack()
+bou3= tk.Button(fen, text='Quitter', width =8, command=fen.destroy)
+bou3.pack(side="bottom")
 can.after(500,anim_personne)
 
 fen.mainloop()
